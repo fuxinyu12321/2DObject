@@ -14,3 +14,4 @@ PlayerController.cs - 角色移动/跳跃/动画总控
 PlayerHealth.cs - 生命值
 Enemy.cs - 简单巡逻 AI
 该项目中含有部分早起学习unity时解包《星露谷物语》产生的文件
+点开Scenes2

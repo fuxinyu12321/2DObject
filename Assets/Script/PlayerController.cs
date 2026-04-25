@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     public float runSpeed;
     public float jumpSpeed;
+    public float climbSpeed;
     private Rigidbody2D Player;
     private Animator ani;
     private BoxCollider2D feet;
@@ -14,13 +15,19 @@ public class PlayerController : MonoBehaviour
     private bool JumpTimes;
     private int DoubleJump=0;
     public static bool isGameAlive = true;
-
+    private bool isLadder;
+    private bool isClimbing;
+    private bool isJumping;
+    private bool isFalling;
+    private bool isDoubleJumping;
+    private float playerGravity;
     // Start is called before the first frame update
     void Start()
     {
         Player = GetComponent<Rigidbody2D>();
         ani = GetComponent<Animator>();
         feet = GetComponent<BoxCollider2D>();
+        playerGravity=Player.gravityScale;
     }
 
     // Update is called once per frame
@@ -28,13 +35,17 @@ public class PlayerController : MonoBehaviour
     {
         if (isGameAlive)
         {
+            IsGround();      // 1. 先检测地面
+            CheckLadder();   // 2. 检测梯子
             Flip();
             Run();
+            Climb();         // 3. 执行攀爬（会修改 Animator 的 Climb 状态）
             Jump();
-            IsGround();
             HaveJumpTimes();
+
+            CheckStatus();   // 4. 在这里更新状态
             JumpToFall();
-            MoveToFall();
+            MoveToFall();    // 5. 现在 isClimbing 是最新的了
         }       
     }
     //地面检测
@@ -42,6 +53,10 @@ public class PlayerController : MonoBehaviour
     {
         Ground = feet.IsTouchingLayers(LayerMask.GetMask("Ground"));
         
+    }
+    void CheckLadder()
+    {
+        isLadder= feet.IsTouchingLayers(LayerMask.GetMask("Ladder"));
     }
     //二段跳
     void HaveJumpTimes()
@@ -108,24 +123,57 @@ public class PlayerController : MonoBehaviour
         }
         
     }
-    //转换跳跃下落状态
-    void MoveToFall() 
+    void Climb()
     {
-        // 只有不在地面上，并且向下运动时才是下落
-        if (!Ground && Player.velocity.y < -0.1f)
+        if(isLadder)
         {
-            ani.SetBool("Fall", true);
+            float moveY = Input.GetAxis("Vertical");
+            if(moveY > 0.1f||moveY<-0.1f)
+            {
+                ani.SetBool("Climb", true);
+                ani.SetBool("Fall", false);
+                Player.gravityScale = 0.0f;
+                Player.velocity=new Vector2(Player.velocity.x, moveY* climbSpeed);
+
+            }
+            else
+            {
+                if (isJumping || isFalling || isDoubleJumping)
+                {
+                    ani.SetBool("Climb",false);
+                }
+                else
+                {
+                    ani.SetBool("Climb", false);
+                    Player.velocity =new Vector2(Player.velocity.x, 0.0f);
+                }
+            }
         }
-        else if (Ground)
+        else
         {
-            // 在地面上时，确保不播放下落动画
-            ani.SetBool("Fall", false);
+            ani.SetBool("Climb",false );
+            Player.gravityScale =playerGravity;
         }
 
     }
+    //转换跳跃下落状态
+    void MoveToFall() 
+    {
+        // 只在非攀爬状态下更新Fall状态
+        if (!isClimbing)
+        {
+            if ((!Ground) && Player.velocity.y < -0.1f && !ani.GetBool("Jump") && !ani.GetBool("DoubleJump"))
+            {
+                ani.SetBool("Fall", true);
+            }
+            else if (Ground)
+            {
+                ani.SetBool("Fall", false);
+            }
+        }
+    }
     void JumpToFall()
     {
-        ani.SetBool("Idle",false);
         if (ani.GetBool("Jump"))
         {
             if (Player.velocity.y < 0.0f)
@@ -142,10 +190,20 @@ public class PlayerController : MonoBehaviour
                 ani.SetBool("Fall", true);
             }
         }
-        else if (Ground)
+        else if (Ground && !ani.GetBool("Climb"))
         {
             ani.SetBool("Fall", false);
-            ani.SetBool("Idle", true);
+            if (!ani.GetBool("run"))
+            {
+                ani.SetBool("Idle", true);
+            }
         }
+    }
+    void CheckStatus()
+    {
+        isJumping = ani.GetBool("Jump");
+        isFalling = ani.GetBool("Fall");
+        isDoubleJumping = ani.GetBool("DoubleJump");
+        isClimbing = ani.GetBool("Climb");
     }
 }

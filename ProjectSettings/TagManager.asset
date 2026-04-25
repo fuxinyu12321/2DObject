@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
+  - RevivePoint
   layers:
   - Default
   - TransparentFX
@@ -56,6 +57,9 @@ TagManager:
     locked: 0
   - name: Ground
     uniqueID: 2412998959
+    locked: 0
+  - name: Ladder
+    uniqueID: 2418073383
     locked: 0
   - name: Player
     uniqueID: 2821143769

@@ -20,8 +20,10 @@ public class Spike : MonoBehaviour
     }
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.CompareTag("Player"))
+        
+        if(other.CompareTag("Player")&&other.GetType().ToString()== "UnityEngine.PolygonCollider2D")
         {
+            Debug.Log($"µÿ¥Ã‘Ï≥……À∫¶");
             playerHealth.DamegePlayer(damage);
         }
     }

@@ -10,7 +10,7 @@ public abstract class Enemy : MonoBehaviour
     private Color originalColor;
     public float FlashTime;
     public GameObject bloodEffect;
-    public PlayerHealth playerHealth;
+    private PlayerHealth playerHealth;
     // Start is called before the first frame update
     public void Start()
     {

@@ -16,4 +16,4 @@ Enemy.cs - 简单巡逻 AI
 该项目中含有部分早期学习unity时解包《星露谷物语》产生的文件
 
 ## 使用方法
-.exe文件在Game文件夹下My project。exe
+.exe文件在Game文件夹下My project.exe

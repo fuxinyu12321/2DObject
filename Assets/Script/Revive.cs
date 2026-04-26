@@ -6,6 +6,7 @@ public class Revive : MonoBehaviour
 {
     private GameObject player;
     private PolygonCollider2D polygonCollider2D;
+    public GameObject DeathMenuUI;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,7 +19,7 @@ public class Revive : MonoBehaviour
     {
         if (!PlayerController.isGameAlive)
         {
-            
+            DeathMenuUI.SetActive(true);
             if (Input.GetButtonDown("Revive"))
             {
                 
@@ -29,7 +30,7 @@ public class Revive : MonoBehaviour
     }
     void revive()
     {
-        
+        DeathMenuUI.SetActive(false);
         player.transform.position= gameObject.transform.position;
         player.SetActive(true);
         PlayerController.isGameAlive = true;

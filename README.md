@@ -13,5 +13,7 @@
 PlayerController.cs - 角色移动/跳跃/动画总控
 PlayerHealth.cs - 生命值
 Enemy.cs - 简单巡逻 AI
-该项目中含有部分早起学习unity时解包《星露谷物语》产生的文件
-点开Scenes2
+该项目中含有部分早期学习unity时解包《星露谷物语》产生的文件
+
+## 使用方法
+.exe文件在Game文件夹下My project.exe
